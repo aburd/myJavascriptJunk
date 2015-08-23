@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Saturday Square Dance</title>
+	<style>
+		.box {
+			height: 50px;
+			width: 50px;
+			box-shadow: 0 3px 3px #292929;
+			position: absolute;
+			text-align:right;
+			color: #fff;
+		}
+	</style>
+</head>
+<body onload="init()">
+	
+</body>
+
+<script>
+function init() {
+
+	generateSquares(boxNumber);
+	updateBoxes();
+}
+
+// step 1 set vars and functions
+var x = [];
+var y = [];
+var dx = [];
+var dy = [];
+var screenSizeX = 1200;
+var screenSizeY = 800;
+var boxNumber = 100;
+var speedX = 0.03;
+var speedY = 0.03;
+
+	//color function
+function newColor (){
+	var colors = [];
+	var i;
+	for(i = 0; i<3; i++){
+		colors[i] = Math.random()*255;
+		colors[i] = Math.round(colors[i]);
+	}
+//	return "rgb(" + colors[0] + "," + colors[1] + "," + colors[2] + ")";
+	return "rgb(" + colors[0] + "," + "0, 255)";
+}
+
+function generateSquare(){
+	var b = document.createElement("div");
+	b.className = "box";
+
+	document.body.appendChild(b);
+	b.style.backgroundColor = newColor();
+}
+
+	// idiot proof animation frame request
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+// step 2  generate boxes with position
+function generateSquares(number) {
+	var i;
+	for(i=0; i<number; i++) {
+		generateSquare();
+		x[i] = y[i] = 0;
+		dx[i] = Math.random()*screenSizeX;
+		dy[i] = Math.random()*screenSizeY;
+	}
+}
+
+// step 3 update box positions
+function updateBoxes() {
+	var i;
+	var box;
+	for(i=0; i<boxNumber; i++) {
+		x[i] += (dx[i] - x[i]) * speedX * 2;
+		y[i] += (dy[i] - y[i]) * speedY;
+		
+		box = document.getElementsByClassName("box");
+		box[i].style.left = x[i] + "px";
+		box[i].style.top = y[i] + "px";
+
+		// check for completeness
+		if(Math.abs(dy[i] - y[i]) < 1) {
+			dx[i] = Math.random()*screenSizeX;
+			dy[i] = Math.random()*screenSizeY;
+		}
+
+	}
+
+	requestAnimFrame(updateBoxes);
+}
+</script>
+
+</html>
